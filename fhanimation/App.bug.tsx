@@ -15,75 +15,72 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 let heartCount = 0;
 
-class App extends React.Component {
-  state: {hearts: {id: number; right: number}[] | null} = {
+const App = () => {
+  const [state, setState] = useState<{
+    hearts: {id: number; right: number}[] | null;
+  }>({
     hearts: null,
-  };
+  });
 
-  getRandomNumber = (max: number, min: number) => {
+  const getRandomNumber = (max: number, min: number) => {
     return Math.random() * (max - min) + min;
   };
 
-  addHeart = () => {
+  const addHeart = () => {
     heartCount++;
-    this.setState({
-      ...this.state,
+    setState({
+      ...state,
       hearts:
-        this.state.hearts != null
-          ? [
-              ...this.state.hearts,
-              {id: heartCount, right: this.getRandomNumber(50, 100)},
-            ]
-          : [{id: heartCount, right: this.getRandomNumber(0, 100)}],
+        state.hearts != null
+          ? [...state.hearts, {id: heartCount, right: getRandomNumber(50, 100)}]
+          : [{id: heartCount, right: getRandomNumber(0, 100)}],
     });
   };
 
-  removeHeart = (id: number) => {
-    this.setState({
-      ...this.state,
+  const removeHeart = (id: number) => {
+    setState({
+      ...state,
       hearts:
-        this.state.hearts != null
-          ? this.state.hearts.filter(heart => {
+        state.hearts != null
+          ? state.hearts.filter(heart => {
               return heart.id !== id;
             })
-          : this.state.hearts,
+          : state.hearts,
     });
   };
 
-  render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        {this.state.hearts?.map(heart => {
-          return (
-            <HeartContainer
-              key={heart.id}
-              style={{right: heart.right}}
-              onComplete={() => {
-                this.removeHeart(heart.id);
-              }}
-            />
-          );
-        })}
+  return (
+    <SafeAreaView style={styles.container}>
+      {state.hearts?.map(heart => {
+        return (
+          <HeartContainer
+            key={heart.id}
+            style={{right: heart.right}}
+            onComplete={() => {
+              removeHeart(heart.id);
+            }}
+          />
+        );
+      })}
 
-        <View>
-          <TouchableOpacity
-            onPress={this.addHeart}
-            style={{
-              height: 50,
-              width: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'pink',
-              borderRadius: 40,
-              margin: 20,
-            }}>
-            <FontAwesomeIcon color="red" size={25} name="heart" />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  }
-}
+      <View>
+        <TouchableOpacity
+          onPress={addHeart}
+          style={{
+            height: 50,
+            width: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'pink',
+            borderRadius: 40,
+            margin: 20,
+          }}>
+          <FontAwesomeIcon color="red" size={25} name="heart" />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const {height} = Dimensions.get('window');
 
